@@ -1,0 +1,117 @@
+---
+title: "POC-code-1"
+author: "Edgart Flores"
+date: "5/18/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+devtools::install_github("tidyverse/tidyverse")
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggstatsplot)
+#library(ggplot)
+library(gganimate)
+library(gapminder)
+library(plotly)
+```
+
+```{r setup, include=FALSE}
+library(ggfortify)
+library(vegan)
+library(gridExtra)
+library(RColorBrewer)
+library(scales)
+library(dplyr)
+library(hrbrthemes)
+library(metR)
+```
+
+```{r cars}
+library(dataRetrieval)
+require(visreg)
+require(MASS)
+require(reshape2)
+library(scales)
+library(dplyr)
+library(gridExtra)
+library(ggpubr)
+```
+
+```{r, message=FALSE}
+data <- read.csv("~/Documents/POC/isotope_R/input/isotope_Igor.csv", header = TRUE, sep = ",")
+
+data <- subset(data, param == "POC")
+
+data2 <- data[!data$site=='Atacamex',]
+
+
+#data2 <- subset(data, site == "A2")
+```
+
+## R Markdown
+```{r }
+# define function about Curve of Martin
+z=(1:8000)
+f1=(z/100)^(-0.658)
+f=4.53*f1
+
+```
+
+
+```{r }
+mypal <- colorRampPalette(brewer.pal(4, "RdBu"))
+library(cowplot)
+require(ggplot2)
+require(patchwork)
+
+
+p1 <- ggplot(data2, 
+       aes(value, depth_water, color = site)) +
+         geom_path(aes(colour=site)) +
+         geom_point(aes(group=site, colour=site, shape=site), size=3) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_colour_manual(values = mypal(4)) +
+  scale_shape_manual(values=c(19, 19, 19, 19))+
+    labs(title = "",
+         subtitle = "",
+         x = "",
+         y = "Depth (m)") +
+        scale_y_reverse() + 
+        theme_bw()
+
+p1 
+
+p2 <- ggplot(data2, 
+       aes(value, depth_water, color = site)) +
+         geom_path(aes(colour=site)) +
+         geom_point(aes(group=site, colour=site, shape=site), size=3) +
+   scale_x_continuous(limits=c(5, 25)) +
+  
+  scale_colour_manual(values = mypal(4)) +
+  scale_shape_manual(values=c(19, 19, 19, 19)) +
+    labs(title = "",
+         subtitle = "",
+         x = "",
+         y = "Depth (m)") +
+        scale_y_reverse() + 
+  scale_y_continuous(limits =c(5000, 8100)) +
+        theme_bw()
+
+p2 
+
+p1 +
+  inset_element(p2, left = 0.25, bottom = 0.65, right = 1, top = 0.35)
+```

@@ -1,0 +1,113 @@
+id,depth,type_new,Type_simple,type,d13C,d15N,C/N,POC,PON
+Hadal_Sed_A5_0_1cm_7890m,7890,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23,11.1,7.6,0.7,0.1
+Hadal_Sed_A5_1_2cm_7890m,7890,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23.6,10.8,7.5,0.5,0.1
+Hadal_Sed_A5_2_3cm_7890m,7890,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23.4,9.8,7.2,0.4,0.1
+Hadal_Sed_A4_0_1cm_8063m,8063,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23.3,9.9,7.9,0.6,0.1
+Hadal_Sed_A4_1_2cm_8063m,8063,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23.4,9.6,7.4,0.5,0.1
+Hadal_Sed_A4_2_3cm_8063m,8063,Hadal_Sed,Hadal_Sed,Hadal_Sed,-23.3,9.8,7.4,0.4,0.1
+Hadal_Sed_A10_0_1cm_7734m,7734,Hadal_Sed,Hadal_Sed,Hadal_Sed,-22.8,11.9,7.7,1.3,0.2
+Hadal_Sed_A10_2_3cm_7734m,7734,Hadal_Sed,Hadal_Sed,Hadal_Sed,-22.7,12.4,7.4,1,0.1
+Bathyal_Sed_B22_545m,545,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-22.9,10.6,8.8,1.6,0.2
+Bathyal_Sed_B12_529m,529,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-22.1,11.8,9.4,5.8,0.6
+Bathyal_Sed_B11_1113m,1113,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-22.2,12.4,8.5,3.3,0.4
+Bathyal_Sed_B08_539m,539,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-21.9,10,8.7,0.4,0.1
+Bathyal_Sed_B07_920m,920,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-22.4,12.9,8.1,2.5,0.3
+Bathyal_Sed_B05_957m,957,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-22.2,11.7,8.1,1.3,0.2
+Bathyal_Sed_B04_1200m,1200,Bathyal_Sed,non-hadal sediments,Bathyal_Sed,-21.8,12.4,7.7,1.3,0.2
+Water_A1_5m,5,Epipelagic ,Water_column,Epipelagic ,-24.5,10.2,8.3,71,10.75
+Water_A1_20m,20,Epipelagic ,Water_column,Epipelagic ,-25.9,9.2,7.8,62.03,9.92
+Water_A1_60m,60,Epipelagic ,Water_column,Epipelagic ,-27.8,9.1,11.1,19.18,2.15
+Water_A1_200m,200,Epipelagic ,Water_column,Epipelagic ,-25.8,7.7,8.8,19.76,2.8
+Water_A2_5m,5,Epipelagic ,Water_column,Epipelagic ,-20.5,11.2,8.4,97.5,14.46
+Water_A2_20m,20,Epipelagic ,Water_column,Epipelagic ,-23.7,9.9,9.4,128.97,17.18
+Water_A2_60m,60,Epipelagic ,Water_column,Epipelagic ,-26.3,10.5,10.2,63.58,7.81
+Water_A2_200m,200,Epipelagic ,Water_column,Epipelagic ,-26.2,9.9,10.5,46.53,5.56
+Water_A4_5m,5,Epipelagic ,Water_column,Epipelagic ,-23.4,11,7,65.57,11.78
+Water_A4_20m,20,Epipelagic ,Water_column,Epipelagic ,-28.5,10.1,19.9,115.77,7.27
+Water_A4_60m,60,Epipelagic ,Water_column,Epipelagic ,-27.5,8.1,12.3,49.76,5.05
+Water_A4_200m,200,Epipelagic ,Water_column,Epipelagic ,-26.9,7.8,12.7,50.26,4.96
+Water_A6_5m,5,Epipelagic ,Water_column,Epipelagic ,-22,10.7,7,95.73,17.13
+Water_A1_500m,500,Dark_Ocean,Water_column,Mesopelagic,-27.6,8.2,10.5,16.5,1.96
+Water_A1_1000m,1000,Dark_Ocean,Water_column,Mesopelagic,-27.2,9.4,11.3,12.16,1.35
+Water_A2_500m,500,Dark_Ocean,Water_column,Mesopelagic,-27.4,8.7,13.7,26.09,2.38
+Water_A2_1000m,1000,Dark_Ocean,Water_column,Mesopelagic,-26.5,8.5,11.6,16.33,1.76
+Water_A4_500m,500,Dark_Ocean,Water_column,Mesopelagic,-29.2,6.9,23.6,71.5,3.79
+Water_A4_1000m,1000,Dark_Ocean,Water_column,Mesopelagic,-26.2,9,10.5,13.95,1.65
+Water_A6_1000m,1000,Dark_Ocean,Water_column,Mesopelagic,-27.2,6.4,13.4,13.28,1.24
+Water_A2_2000m,2000,Dark_Ocean,Water_column,Bathypelagic,-27.1,7.3,11.9,13.03,1.37
+Water_A2_3000m,3000,Dark_Ocean,Water_column,Bathypelagic,-24.2,8.1,10,12.08,1.51
+Water_A2_4000m,4000,Dark_Ocean,Water_column,Bathypelagic,-25.9,6.6,9.2,7.52,1.02
+Water_A4_2000m,2000,Dark_Ocean,Water_column,Bathypelagic,-26.3,8.3,11.4,12.49,1.37
+Water_A4_3000m,3000,Dark_Ocean,Water_column,Bathypelagic,-26.1,8.9,10.4,7.46,0.9
+Water_A4_4000m,4000,Dark_Ocean,Water_column,Bathypelagic,-26.1,8.1,9.7,9.89,1.27
+Water_A6_2000m,2000,Dark_Ocean,Water_column,Bathypelagic,-27.4,8.2,16.8,13.52,1.01
+Water_A6_3000m,3000,Dark_Ocean,Water_column,Bathypelagic,-27,7.1,13.8,7.63,0.69
+Water_A6_4000m,4000,Dark_Ocean,Water_column,Bathypelagic,-26.7,8.1,12.7,7.46,0.74
+Water_A6_5000m,5000,Dark_Ocean,Water_column,Abyssopelagic,-21.6,7.1,7.4,22.64,3.82
+Water_A6_6000m,6000,Dark_Ocean,Water_column,Abyssopelagic,-25.9,7.9,10.4,6.64,0.8
+Water_A2_5000m,5000,Dark_Ocean,Water_column,Abyssopelagic,-25.4,7.8,9.4,10.56,1.41
+Water_A2_6000m,6000,Dark_Ocean,Water_column,Abyssopelagic,-26.5,7.9,11.2,9.85,1.1
+Water_A4_5000m,5000,Dark_Ocean,Water_column,Abyssopelagic,-25.4,6.8,8.4,6.73,1
+Water_A4_7000m,7000,Dark_Ocean,Water_column,Abyssopelagic,-27.1,6.1,11.2,11.63,1.31
+Water_A2_7000m,7000,Hadalpelagic,Water_column,Hadalpelagic,-26.8,8.8,12.2,13.47,1.38
+Water_A2_8000m,8000,Hadalpelagic,Water_column,Hadalpelagic,-26.4,8.2,11.3,14.54,1.6
+Water_A4_8079m,8000,Hadalpelagic,Water_column,Hadalpelagic,-27.3,5.4,9.7,16.94,2.18
+Water_A6_7000m,7000,Hadalpelagic,Water_column,Hadalpelagic,-26.6,9.1,11.5,5.55,0.6
+GeoB 3301-2_970m,970,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.55,10.35,6.75,1.13,
+GeoB 3302-2_1502m,1502,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.4,10.35,7.89,1.33,
+GeoB 3303-1_1983m,1983,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.42,10.41,8.16,1.25,
+GeoB 3304-3_2413m,2413,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.73,11.03,8.38,1.19,
+GeoB 3305-2_3029m,3029,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.27,11.4,7.83,1.06,
+GeoB 3308-3_3620m,3620,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.45,13.41,6.26,0.74,
+GeoB 3311-2_471m,471,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.72,9.92,7.55,0.81,
+GeoB 3312-2_583m,583,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.12,10.08,8.12,1.82,
+GeoB 3313-3_851m,851,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.91,10.24,7.57,2.25,
+GeoB 3314-2_1652m,1652,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.05,10.31,7.58,1.73,
+GeoB 3316-1_2574m,2574,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.84,10.08,7.56,1.86,
+GeoB 3317-6_2923m,2923,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.87,10.04,7.72,1.75,
+GeoB 3318-2_3207m,3207,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.96,10.03,7.58,1.65,
+GeoB 3323-4_3697m,3697,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.86,10.14,7.72,1.37,
+GeoB 3349-4_2471m,2471,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.54,10.19,7.07,2.15,
+GeoB 3352-1_2108m,2108,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.82,10.3,6.93,1.92,
+GeoB 3353-1_3747m,3747,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.74,10.59,7.51,2.03,
+GeoB 3354-1_3234m,3234,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.62,10.65,7.45,2.19,
+GeoB 3355-4_1511m,1511,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.96,10.64,7.36,2.01,
+GeoB 3357-1_2103m,2103,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20,10.19,7.65,2.33,
+GeoB 3359-1_680m,680,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.19,10.1,7.75,1.92,
+GeoB 3365-1_2450m,2450,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.12,11.27,7.78,0.73,
+GeoB 3371-1_3458m,3458,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.32,12.09,7.42,0.97,
+GeoB 3373-1_1580m,1580,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.28,12.21,7.59,0.71,
+GeoB 3374-1_1352,1352,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.28,12.07,7.43,1.08,
+GeoB 3375-2_1948,1948,non-hadal sediments,non-hadal sediments,non-hadal sediments,-20.12,12.54,6.83,0.66,
+GeoB 3376-2_2437,2437,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.9,13.33,5.63,0.43,
+GeoB 3377-1_3576,3576,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.65,13.83,4.98,0.4,
+GeoB 3383-1_4207,4207,non-hadal sediments,non-hadal sediments,non-hadal sediments,-19.39,14.51,6.5,0.49,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-21.2,,8.18,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.51,,8.62,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-19.95,,8,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-19.99,,8.03,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.22,,7.92,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.63,,7.68,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.48,,7.95,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.76,,8.01,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.39,,7.91,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.57,,7.83,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.56,,7.93,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.67,,7.54,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.85,,8.72,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.96,,8.29,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-21.01,,7.2,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-21.01,,7.82,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-21.1,,7.98,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.99,,7.98,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-20.78,,7.46,,
+Hebben_Sed_Trap_91_92_3700m,3700,Sediment_traps,Sediment_traps,Sediment_traps,-21.31,,7.51,,
+"Vargas et al., 2021",2,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-24.6,,7.8,95.5,12.3
+"Vargas et al., 2021",10,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-24.2,,7,158.3,22.8
+"Vargas et al., 2021",25,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-23.3,,6.8,115,16.9
+"Vargas et al., 2021",50,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-27.1,,11.6,36.5,3.1
+"Vargas et al., 2021",100,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-24.3,,8,45,5.6
+"Vargas et al., 2021",250,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-24.9,,12,50.1,4.2
+"Vargas et al., 2021",500,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-27,,13,42.4,3.3
+"Vargas et al., 2021",750,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-29.9,,22.3,57,2.6
+"Vargas et al., 2021",1000,Water_column_<1000_m,Water_column_<1000_m,Water_column_<1000_m,-25.5,,11.9,86.1,7.2

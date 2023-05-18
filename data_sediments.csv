@@ -1,0 +1,47 @@
+id,type,type_sep_1,type_sep,depth,C/N,d13C,d15N,POC,PON
+Hadal_Sed_A5_0_1cm_7890_m,Hadal_Sed,This study,Atacama_trench_sediments,7890,7.6,-23,11.1,0.7,0.1
+Hadal_Sed_A5_1_2cm_7890_m,Hadal_Sed,This study,Atacama_trench_sediments,7890,7.5,-23.6,10.8,0.5,0.1
+Hadal_Sed_A5_2_3cm_7890_m,Hadal_Sed,This study,Atacama_trench_sediments,7890,7.2,-23.4,9.8,0.4,0.1
+Hadal_Sed_A4_0_1cm_8063_m,Hadal_Sed,This study,Atacama_trench_sediments,8063,7.9,-23.3,9.9,0.6,0.1
+Hadal_Sed_A4_1_2cm_8063_m,Hadal_Sed,This study,Atacama_trench_sediments,8063,7.4,-23.4,9.6,0.5,0.1
+Hadal_Sed_A4_2_3cm_8063_m,Hadal_Sed,This study,Atacama_trench_sediments,8063,7.4,-23.3,9.8,0.4,0.1
+Hadal_Sed_A10_0_1cm_7734_m,Hadal_Sed,This study,Atacama_trench_sediments,7734,7.7,-22.8,11.9,1.3,0.2
+Hadal_Sed_A10_2_3cm_7734_m,Hadal_Sed,This study,Atacama_trench_sediments,7734,7.4,-22.7,12.4,1,0.1
+Bathyal_Sed_B22_545_m,Bathyal_Sed,This study,non-hadal sediments,545,8.8,-22.9,10.6,1.6,0.2
+Bathyal_Sed_B12_529_m,Bathyal_Sed,This study,non-hadal sediments,529,9.4,-22.1,11.8,5.8,0.6
+Bathyal_Sed_B11_1113_m,Bathyal_Sed,This study,non-hadal sediments,1113,8.5,-22.2,12.4,3.3,0.4
+Bathyal_Sed_B08_539_m,Bathyal_Sed,This study,non-hadal sediments,539,8.7,-21.9,10,0.4,0.1
+Bathyal_Sed_B07_920_m,Bathyal_Sed,This study,non-hadal sediments,920,8.1,-22.4,12.9,2.5,0.3
+Bathyal_Sed_B05_957_m,Bathyal_Sed,This study,non-hadal sediments,957,8.1,-22.2,11.7,1.3,0.2
+Bathyal_Sed_B04_1200_m,Bathyal_Sed,This study,non-hadal sediments,1200,7.7,-21.8,12.4,1.3,0.2
+GeoB 3301-2_970_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,970,6.75,-20.55,10.35,1.13,
+GeoB 3302-2_1502_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1502,7.89,-20.4,10.35,1.33,
+GeoB 3303-1_1983_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1983,8.16,-20.42,10.41,1.25,
+GeoB 3304-3_2413_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2413,8.38,-20.73,11.03,1.19,
+GeoB 3305-2_3029_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3029,7.83,-20.27,11.4,1.06,
+GeoB 3308-3_3620_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3620,6.26,-19.45,13.41,0.74,
+GeoB 3311-2_471_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,471,7.55,-20.72,9.92,0.81,
+GeoB 3312-2_583_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,583,8.12,-20.12,10.08,1.82,
+GeoB 3313-3_851_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,851,7.57,-19.91,10.24,2.25,
+GeoB 3314-2_1652_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1652,7.58,-20.05,10.31,1.73,
+GeoB 3316-1_2574_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2574,7.56,-19.84,10.08,1.86,
+GeoB 3317-6_2923_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2923,7.72,-19.87,10.04,1.75,
+GeoB 3318-2_3207_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3207,7.58,-19.96,10.03,1.65,
+GeoB 3323-4_3697_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3697,7.72,-19.86,10.14,1.37,
+GeoB 3349-4_2471_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2471,7.07,-19.54,10.19,2.15,
+GeoB 3352-1_2108_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2108,6.93,-19.82,10.3,1.92,
+GeoB 3353-1_3747_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3747,7.51,-19.74,10.59,2.03,
+GeoB 3354-1_3234_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3234,7.45,-19.62,10.65,2.19,
+GeoB 3355-4_1511_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1511,7.36,-19.96,10.64,2.01,
+GeoB 3357-1_2103_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2103,7.65,-20,10.19,2.33,
+GeoB 3359-1_680_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,680,7.75,-20.19,10.1,1.92,
+GeoB 3365-1_2450_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2450,7.78,-20.12,11.27,0.73,
+GeoB 3368-4_3240_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3240,10.5,-21.34,11.54,1.16,
+GeoB 3371-1_3458_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3458,7.42,-20.32,12.09,0.97,
+GeoB 3372-4_4409_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,4409,3.64,-19.58,14.12,0.25,
+GeoB 3373-1_1580_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1580,7.59,-20.28,12.21,0.71,
+GeoB 3374-1_1352_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1352,7.43,-20.28,12.07,1.08,
+GeoB 3375-2_1948_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,1948,6.83,-20.12,12.54,0.66,
+GeoB 3376-2_2437_m,Bathyal_Sed,Hebbeln_et_al_2000,non-hadal sediments,2437,5.63,-19.9,13.33,0.43,
+GeoB 3377-1_3576_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,3576,4.98,-19.65,13.83,0.4,
+GeoB 3383-1_4207_m,Abyssal_Sed,Hebbeln_et_al_2000,non-hadal sediments,4207,6.5,-19.39,14.51,0.49,

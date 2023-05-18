@@ -1,0 +1,2271 @@
+---
+title: "POC_code_3"
+author: "Edgart Flores"
+date: "5/18/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+
+install.packages(
+   "ggplot2",
+   repos = c("http://rstudio.org/_packages",
+   "http://cran.rstudio.com")
+)
+
+library(ggplot2)
+library(ggfortify)
+library(vegan)
+library(tidyverse)
+#library(gridExtra)
+library(RColorBrewer)
+library(scales)
+library(dplyr)
+library(hrbrthemes)
+library(metR)
+library(reshape2)
+library(ggpmisc)
+library(viridis)
+library(ggtext)
+```
+
+```{r cars}
+library(ggplot2)
+library(tidyverse)
+library(hrbrthemes)
+library(viridis) 
+library(gridExtra)
+library(ggrepel)
+library(plotly)
+library(gapminder)
+library("viridis") 
+library(scales) 
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(wesanderson)
+#library(ochRe)
+library(scico)
+#library(ggarrange)
+library(ggpubr)
+```
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/sediments.csv", header = TRUE, sep = ",")
+```
+
+```{r cars}
+# New facet label names for supp variable
+variable_names <- list(
+  "d15N" = "δ¹⁵N (‰)",
+  "d13C" = "δ¹³C (‰)",
+  "percent.C" = "POC (%)",
+   "percent.N" = "PON (%)",
+  "C/N" = "C/N"
+)
+
+variable_labeller <- function(variable,value){
+  return(variable_names[value])
+}
+```
+
+```{r cars}
+library("scales")
+reverselog_trans <- function(base = exp(1)) {
+    trans <- function(x) -log(x, base)
+    inv <- function(x) base^(-x)
+    trans_new(paste0("reverselog-", format(base)), trans, inv, 
+              log_breaks(base = base), 
+              domain = c(1e-100, Inf))
+}
+```
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(12, "RdBu"))
+p1 <- ggplot(data, 
+       aes(value, depth_water, color = zone)) +
+         #geom_point(shape=21, color="black", fill="#69b3a2", size=1) +
+         #geom_path(aes(colour=zone)) +
+         geom_point(aes(group=zone, colour=zone, shape=zone)) +
+         #geom_smooth(method = "loess",orientation = "y", span=0.4, se = FALSE, level=0.95, size=0.6) +
+         #geom_line(linetype = "dashed") +
+    facet_wrap(~ param, scales = "free", nrow=1, labeller=variable_labeller) +
+    labs(title = "",
+         subtitle = "",
+         x = "",
+         y = "Depth (m)") +
+       scale_colour_manual(values = mypal(12)) +
+       scale_y_continuous(trans = reverselog_trans(10),breaks = c(0, 
+               10,100,1000,2000,6000,8000, seq(0, 8000, by = 2000))) + 
+     
+        #scale_y_reverse() +
+        #theme_classic() + 
+    theme(legend.title=element_blank())
+p1 + annotation_logticks(sides = "l")  
+```
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(12, "RdBu"))
+p1 <- ggplot(data, 
+       aes(value, depth_water, color = zone)) +
+         #geom_point(shape=21, color="black", fill="#69b3a2", size=1) +
+         #geom_path(aes(colour=zone)) +
+         geom_point(aes(group=zone, colour=zone, shape=zone)) +
+         #geom_smooth(method = "loess",orientation = "y", span=0.4, se = FALSE, level=0.95, size=0.6) +
+         #geom_line(linetype = "dashed") +
+    facet_wrap(~ param, scales = "free", nrow=1, labeller=variable_labeller) +
+    labs(title = "",
+         subtitle = "",
+         x = "",
+         y = "Depth (m)") +
+       scale_colour_manual(values = mypal(12)) +
+       #scale_y_continuous(trans = reverselog_trans(10),breaks = c(0, 
+       #        10,100,1000,2000,6000,8000, seq(0, 8000, by = 2000))) + 
+     
+        scale_y_reverse() +
+        #theme_classic() + 
+    theme(legend.title=element_blank())
+p1 + annotation_logticks(sides = "l")  
+```
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr.csv", header = TRUE, sep = ",")
+```
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(12, "RdBu"))
+
+
+library(ggpmisc)
+x <- data$d13C
+y <- data$d15N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=zone, color=zone, size = zone))+
+  scale_shape_manual(values=c(15, 19, 17,15, 19, 17,15, 19, 17,18)) +
+  scale_colour_manual(values = mypal(12)) +
+  scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4)) +
+  xlab("d13C") + 
+  ylab("d15N") 
+p
+```
+# here we using pelagic zones complete
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ", "Mesopelagic", "Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(7,"Greens"))
+
+x <- data$d13C
+y <- data$d15N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 11)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,1,1)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+# using data 1 that represent water column  
+
+```{r cars}
+x1 <- data1$d13C
+y1 <- data1$d15N
+
+p <- ggplot(data = data1, aes(x = x1, y = y1)) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15)) +
+  scale_color_viridis(discrete = TRUE, option = "D") +
+ scale_size_manual(values=c(4,5,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+p 
+```
+
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+q <- ggplot(data = data1, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+q
+```
+# using data 2 that represent Sediments 
+
+```{r cars}
+x3 <- data2$d13C
+y3 <- data2$d15N
+
+r <- ggplot(data = data2, aes(x = x3, y = y3)) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+r 
+```
+
+```{r cars}
+x4 <- data2$d13C
+y4 <- data2$C.N
+
+s <- ggplot(data = data2, aes(x = x4, y = y4)) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+s 
+```
+
+```{r cars}
+library(ggplot2)
+library(ggpubr)
+
+figure <- ggarrange (p,q,r,s, 
+          common.legend=TRUE,
+                     labels = c("A","B","C","D"), 
+                     ncol = 2, nrow = 2)
+figure
+```
+#---------------------------------------------------
+#             now using type_new_OMZ
+#---------------------------------------------------
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_OMZ.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ", "OMZ_epi ","Mesopelagic", "OMZ_meso","Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(7,"Greens"))
+
+x <- data$d13C
+y <- data$d15N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 11)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,1,1)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+# using data 1 that represent water column  
+
+```{r cars}
+x1 <- data1$d13C
+y1 <- data1$d15N
+
+p <- ggplot(data = data1, aes(x = x1, y = y1)) +
+  geom_point(aes(shape=type_new_OMZ, color=type_new_OMZ, size = type_new_OMZ))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15,19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "D") +
+ scale_size_manual(values=c(4,5,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+p 
+```
+
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+q <- ggplot(data = data1, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type_new_OMZ, color=type_new_OMZ, size = type_new_OMZ))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15, 19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+q
+```
+# using data 2 that represent Sediments 
+
+```{r cars}
+x3 <- data2$d13C
+y3 <- data2$d15N
+
+r <- ggplot(data = data2, aes(x = x3, y = y3)) +
+  geom_point(aes(shape=type_new_OMZ, color=type_new_OMZ, size = type_new_OMZ))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+r 
+```
+
+```{r cars}
+x4 <- data2$d13C
+y4 <- data2$C.N
+
+s <- ggplot(data = data2, aes(x = x4, y = y4)) +
+  geom_point(aes(shape=type_new_OMZ, color=type_new_OMZ, size = type_new_OMZ))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+s 
+```
+
+```{r cars}
+figure <- ggarrange (p,q,r,s, 
+          common.legend=TRUE,
+                     labels = c("A","B","C","D"), 
+                     ncol = 2, nrow = 2)
+figure
+```
+# ANALISIS FINAL DE SCATERPLOT PAPER 2 WC + SED + SED_TRAP
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_final.csv", header = TRUE, sep = ",") # sediments
+data1 <- subset(data, type %in% c("Epipelagic ","Mesopelagic", "Bathypelagic", "Abyssopelagic", "Hadalpelagic", "non-hadal sediments", "Sediment_traps", "Hadal_Sed", "Bathyal_Sed")) # all in
+
+data2 <- subset(data, type %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+
+data3 <- subset(data, type_new %in% c("Epipelagic ","Dark_Ocean", "Hadalpelagic", "non-hadal sediments", "Sediment_traps", "Hadal_Sed", "Bathyal_Sed")) 
+data4 <- subset(data, Type_simple %in% c("non-hadal sediments", "Sediment_traps", "Hadal_Sed", "Water_column"))
+data5 <- subset(data, Type_simple %in% c("non-hadal sediments", "Hadal_Sed"))
+```
+
+# using data 1 that represent water column  
+
+```{r cars}
+x1 <- data5$d13C
+y1 <- data5$d15N
+
+a <- ggplot(data = data5, aes(x = x1, y = y1)) +
+  geom_point(aes(shape=Type_simple, color=Type_simple, size = Type_simple))+
+  geom_text(data=data5,aes(x = x1, y = y1,label=id),alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+a 
+```
+```{r cars}
+x2 <- data5$d13C
+y2 <- data5$C.N
+
+b <- ggplot(data = data5, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=Type_simple, color=Type_simple, size = Type_simple))+
+  geom_text(data=data5,aes(x = x2, y = y2,label=id), alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+b 
+```
+
+```{r cars}
+figure <- ggarrange (a, b, 
+          common.legend=TRUE,
+                     labels = c("A","B"), 
+                     ncol = 2, nrow = 1)
+figure
+```
+# new according with RIVIEWER #1
+
+# ANALISIS FINAL DE SCATERPLOT PAPER 2 WC + SED + SED_TRAP
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_final.csv", header = TRUE, sep = ",") # sediments
+
+data5 <- subset(data,type_new_new %in% c("This Study", "Hebbeln_et_al_2000"))
+```
+
+```{r cars}
+x1 <- data5$d13C
+y1 <- data5$d15N
+
+a <- ggplot(data = data5, aes(x = x1, y = y1)) +
+  geom_point(aes(shape=type_new_new, color=type, size = type_new_new))+
+  geom_text(data=data5,aes(x = x1, y = y1,label=id),alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(18, 19)) +
+  scale_color_manual(values = c("Hadal_Sed" = "orangered", "Bathyal_Sed" = "deepskyblue4", "Abyssal_Sed" = "#E7B800")) +
+  #scale_color_viridis(discrete = TRUE, option = "H") +
+ scale_size_manual(values=c(5,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+a 
+```
+```{r cars}
+x2 <- data5$d13C
+y2 <- data5$C.N
+
+b <- ggplot(data = data5, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type_new_new, color=type, size = type_new_new))+
+  geom_text(data=data5,aes(x = x2, y = y2,label=id), alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_manual(values = c("Hadal_Sed" = "orangered", "Bathyal_Sed" = "deepskyblue4", "Abyssal_Sed" = "#E7B800")) +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+b 
+```
+
+```{r cars}
+figure <- ggarrange (a, b, 
+          common.legend=TRUE,
+                     labels = c("A","B"), 
+                     ncol = 2, nrow = 1)
+figure
+```
+
+
+# solo tenenos en todas d13 y CN
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+q <- ggplot(data = data1, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15, 19, 18, 15, 16)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+q
+```
+# solo tenenos en todas d13 y CN
+```{r cars}
+x2 <- data3$d13C
+y2 <- data3$C.N
+
+
+s <- ggplot(data = data3, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 18, 17, 16, 15, 19, 18, 15, 16)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+s
+```
+
+#Prueba para el revisor 1
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_final.csv", header = TRUE, sep = ",") # sediments
+
+data6 <- subset(data, Type_simple %in% c("Sediment_traps", "Hadal_Sed"))
+```
+
+
+```{r cars}
+x2 <- data6$d13C
+y2 <- data6$C.N
+
+
+s <- ggplot(data = data6, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 19)) +
+  scale_color_viridis(discrete = TRUE, option = "H")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown(),
+    panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank()
+  ) 
+s
+```
+
+
+# solo tenenos en todas d13 y CN
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+u <- ggplot(data = data4, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=Type_simple, color=Type_simple, size = Type_simple))+
+  #geom_text(data=data1,aes(x = x2, y = y2,label=id), alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(16, 18, 17, 19)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,5,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+u
+```
+#----------------------------------------------------------------------------------------------------
+#                                 COMENTARIO DE REVISOR 1
+#----------------------------------------------------------------------------------------------------
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_final_cv.csv", header = TRUE, sep = ",") # sediments
+
+data4 <- subset(data, Type_simple %in% c("non-hadal sediments", "Sediment_traps", "Hadal_Sed", "Water_column", "Water_column_<1000_m"))
+```
+
+```{r cars}
+x2 <- data4$d13C
+y2 <- data4$C.N
+
+
+u <- ggplot(data = data4, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=Type_simple, color=Type_simple, size = Type_simple))+
+  #geom_text(data=data1,aes(x = x2, y = y2,label=id), alpha=0.5, cex = 2.5, colour = "Black") +
+  scale_shape_manual(values=c(16, 18, 17, 19, 20)) +
+  scale_color_viridis(discrete = TRUE, option = "C")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,5,4,4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown(),
+    panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank()
+  ) 
+u
+```
+
+# estadistica, ANOVAS
+
+
+#---------------------------------------------------
+#             now using type new dark ocean
+#---------------------------------------------------
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type_new %in% c("Epipelagic ", "Dark_Ocean", "Hadalpelagic")) # water column
+data2 <- subset(data, type_new %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(7,"Greens"))
+
+x <- data$d13C
+y <- data$d15N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 11)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,1,1)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+# using data 1 that represent water column  
+
+```{r cars}
+x1 <- data1$d13C
+y1 <- data1$d15N
+
+p <- ggplot(data = data1, aes(x = x1, y = y1)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 18, 17)) +
+  scale_color_viridis(discrete = TRUE, option = "D") +
+ scale_size_manual(values=c(4,5,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+p 
+```
+
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+q <- ggplot(data = data1, aes(x = x2, y = y2)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 18, 17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,5,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+q
+```
+# using data 2 that represent Sediments 
+
+```{r cars}
+x3 <- data2$d13C
+y3 <- data2$d15N
+
+r <- ggplot(data = data2, aes(x = x3, y = y3)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "F") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+r 
+```
+
+```{r cars}
+x4 <- data2$d13C
+y4 <- data2$C.N
+
+s <- ggplot(data = data2, aes(x = x4, y = y4)) +
+  geom_point(aes(shape=type_new, color=type_new, size = type_new))+
+  scale_shape_manual(values=c(19, 18)) +
+  scale_color_viridis(discrete = TRUE, option = "F") +
+ scale_size_manual(values=c(4,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+s 
+```
+
+```{r cars}
+figure <- ggarrange (p,q,r,s, 
+          common.legend=TRUE,
+                     labels = c("A","B","C","D"), 
+                     ncol = 2, nrow = 2)
+figure
+```
+
+#----------------------------------------------------
+#             Explorar con más ejes
+#----------------------------------------------------
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ", "Mesopelagic", "Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+
+```{r cars}
+x <- data$d13C
+y <- data$d15N
+
+e <- ggplot(data, aes(x = data$d13C, y = data$d15N, size = POC, color= depth )) +
+        geom_point(alpha=0.7) + 
+  scale_size_area( max_size = 14, breaks = c(1,10,20,30,40),
+                  labels = c(1,10,20,30,40)) +
+   scale_colour_scico(palette = "vik") + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+e
+
+```
+
+# using data 1 that represent water column  
+
+```{r cars}
+x1 <- data1$d13C
+y1 <- data1$d15N
+
+a <- ggplot(data1, aes(x = x1, y = y1, size = POC, color= depth )) +
+        geom_point(alpha=0.7) + 
+  scale_size_area( max_size = 14, breaks = c(10,30,70,110,130),
+                  labels = c(10,30,70,110,130)) +
+   scale_colour_scico(palette = "vik") + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+a
+
+```
+
+```{r cars}
+x2 <- data1$d13C
+y2 <- data1$C.N
+
+
+b <- ggplot(data1, aes(x = x2, y = y2, size = POC, color= depth )) +
+        geom_point(alpha=0.7) + 
+  scale_size_area( max_size = 14, breaks = c(10,30,70,110,130),
+                  labels = c(10,30,70,110,130)) +
+   scale_colour_scico(palette = "vik") + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+b
+
+```
+
+
+# using data 2 that represent Sediments 
+
+```{r cars}
+x3 <- data2$d13C
+y3 <- data2$d15N
+
+
+c <- ggplot(data2, aes(x = x3, y = y3, size = POC, color= depth )) +
+        geom_point(alpha=0.7) + 
+  scale_size_area( max_size = 14, breaks = c(0.6, 0.8,1,3,5),
+                  labels = c(0.6, 0.8,1,3,5)) +
+   scale_colour_scico(palette = "vik") + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+c
+```
+
+```{r cars}
+x4 <- data2$d13C
+y4 <- data2$C.N
+
+d <- ggplot(data2, aes(x = x4, y = y4, size = POC, color= depth )) +
+        geom_point(alpha=0.7) + 
+  scale_size_area( max_size = 14, breaks = c(0.6, 0.8,1,3,5),
+                  labels = c(0.6, 0.8,1,3,5)) +
+   scale_colour_scico(palette = "vik") + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) 
+d
+```
+
+```{r cars}
+figure <- ggarrange (a,b,c,d, 
+          common.legend=T,
+                     labels = c("A","B","C","D"), 
+                     ncol = 2, nrow = 2)
+figure
+```
+
+#----------------------------
+# explorando ANOVA  de una via 
+# puedes comparar 3 o más grupos, requisitos: que cumpla normalidad (Shapiro.test) y homocedasticidad (bartlett.test), si hay diferencias podemos ver de forma pareada entre que grupos hay difrencias significativas usando tukeyHSD
+
+# Data: ANOVA PARA DATA UNBALACED
+#---------------------------
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ", "Mesopelagic", "Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type_new %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+# d13C variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type, d13C)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d13C)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d13C~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d13C~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d13C~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+#write.csv(gh, file="carbon_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa <- aov(d13C~type, data=data1)
+summary(aov.fosa) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type, d13C, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type, d13C, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa)
+plot(TukeyHSD (aov.fosa))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa), las=1)
+
+```
+
+# Explorando los isotopos en los sedimentos 
+
+# Data: ANOVA PARA DATA UNBALACED
+#---------------------------
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ", "Mesopelagic", "Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type_new %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+
+```{r cars}
+ggplot(data2, aes(type, d13C)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data2$d13C)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d13C~type, data=data2)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d13C~type, data=data2, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data2, d13C~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="carbon_isotope_stats_sed.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_sed <- aov(d13C~type, data=data2)
+summary(aov.fosa_sed) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data2, aes(type, d13C, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data2, aes(type, d13C, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+
+TukeyHSD (aov.fosa_sed)
+plot(TukeyHSD (aov.fosa_sed))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_sed), las=1, xlim=c(-1.5, 1)) 
+
+```
+# explorar diferencias con el isotopo de 15N
+
+# d15N variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type, d15N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d15N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d15N~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d15N~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d15N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+#write.csv(gh, file="nitrogen_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_N <- aov(d15N~type, data=data1)
+summary(aov.fosa_N) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type, d15N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type, d15N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_N)
+plot(TukeyHSD (aov.fosa_N))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_N), las=1)
+
+```
+
+# 15N en sedimento 
+
+```{r cars}
+ggplot(data2, aes(type, d15N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data2$d15N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d15N~type, data=data2)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d15N~type, data=data2, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data2, d15N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="nitrogen_isotope_stats_sed.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_sed <- aov(d15N~type, data=data2)
+summary(aov.fosa_sed) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data2, aes(type, d15N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data2, aes(type, d15N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+
+TukeyHSD (aov.fosa_sed)
+plot(TukeyHSD (aov.fosa_sed))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_sed), las=1, xlim=c(-2.5, 1)) 
+
+```
+
+# CN WATER COLUMN
+
+```{r cars}
+ggplot(data1, aes(type, C.N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$C.N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(C.N~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(C.N~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, C.N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="CN_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_CN <- aov(C.N~type, data=data1)
+summary(aov.fosa_CN) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type, C.N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type, C.N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_CN)
+plot(TukeyHSD (aov.fosa_CN))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_CN), las=1)
+
+```
+
+# CN en sedimento 
+
+```{r cars}
+ggplot(data2, aes(type, C.N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data2$C.N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(C.N~type, data=data2)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(C.N~type, data=data2, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data2, C.N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="CN_stats_sed.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_sed <- aov(C.N~type, data=data2)
+summary(aov.fosa_sed) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data2, aes(type, C.N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data2, aes(type, C.N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+
+TukeyHSD (aov.fosa_sed)
+plot(TukeyHSD (aov.fosa_sed))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_sed), las=1, xlim=c(-1.5, 1)) 
+
+```
+
+#-----------------------------------------------------------------------
+#            testing with type_new_OMZ
+#-----------------------------------------------------------------------
+
+# Data: ANOVA PARA DATA UNBALACED
+#---------------------------
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_OMZ.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Epipelagic ","OMZ_Epi", "Mesopelagic", "OMZ_Meso", "Bathypelagic", "Abyssopelagic", "Hadalpelagic")) # water column
+data2 <- subset(data, type_new %in% c("Hadal_Sed", "Bathyal_Sed")) # Sediments
+```
+
+# d13C variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type_new_OMZ, d13C)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d13C)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d13C~type_new_OMZ, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d13C~type_new_OMZ, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d13C~type_new_OMZ, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="carbon_isotope_stats_wc_OMZ.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa <- aov(d13C~type_new_OMZ, data=data1)
+summary(aov.fosa) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type_new_OMZ, d13C, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type_new_OMZ, d13C, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa)
+plot(TukeyHSD (aov.fosa))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa), las=1)
+
+```
+
+# explorar diferencias con el isotopo de 15N
+
+
+# d15N variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type_new_OMZ, d15N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d15N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d15N~type_new_OMZ, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d15N~type_new_OMZ, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d15N~type_new_OMZ, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="OMZ_nitrogen_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_N <- aov(d15N~type_new_OMZ, data=data1)
+summary(aov.fosa_N) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type_new_OMZ, d15N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type_new_OMZ, d15N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_N)
+plot(TukeyHSD (aov.fosa_N))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_N), las=1)
+
+```
+
+# CN WATER COLUMN
+
+```{r cars}
+ggplot(data1, aes(type_new_OMZ, C.N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$C.N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(C.N~type_new_OMZ, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(C.N~type_new_OMZ, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, C.N~type_new_OMZ, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="OMZ_CN_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_CN <- aov(C.N~type_new_OMZ, data=data1)
+summary(aov.fosa_CN) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+ggplot (data1, aes(type_new_OMZ, C.N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression (F["5,65"]== 2.1 * ", p<0.05")) + theme(legend.position = "none")
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type_new_OMZ, C.N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_CN)
+plot(TukeyHSD (aov.fosa_CN))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_CN), las=1)
+
+```
+
+
+#-----------------------------------------------------------------------
+#            testing with type_wc_sed
+#-----------------------------------------------------------------------
+
+# Data: ANOVA PARA DATA UNBALACED
+#---------------------------
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_OMZ.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type_wc_sed %in% c("Hadal_Sed","Bathyal_Sed", "Water_column")) # water column
+```
+
+# d13C variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type_wc_sed, d13C)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d13C)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d13C~type_wc_sed, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d13C~type_wc_sed, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d13C~type_wc_sed, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="wc_vs_sed_carbon_isotope_stats.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa <- aov(d13C~type_wc_sed, data=data1)
+summary(aov.fosa) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+
+o <- ggplot (data1, aes(type_wc_sed, d13C, fill=type_wc_sed)) + geom_boxplot() + geom_jitter() + ggtitle(expression ("p<0.001")) + theme(legend.position = "none") +  
+    scale_fill_brewer(palette="Pastel1") 
+o
+# otra forma de representar esto
+
+ggplot (data1, aes(type_wc_sed, d13C, fill=type_wc_sed)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa)
+plot(TukeyHSD (aov.fosa))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa), las=1)
+
+```
+
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr2_OMZ.csv", header = TRUE, sep = ",")
+data1 <- subset(data, type %in% c("Hadal_Sed","Bathyal_Sed","Mesopelagic","Bathypelagic","Abyssopelagic", "Hadalpelagic", "Epipelagic ")) # water column
+```
+
+# d13C variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type, d13C)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d13C)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d13C~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d13C~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d13C~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="pelagic_water_column_vs_sed_carbon_isotope_stats.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa <- aov(d13C~type, data=data1)
+summary(aov.fosa) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+
+o <- ggplot (data1, aes(type, d13C, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression ("p<0.001")) + theme(legend.position = "none") +  
+    scale_fill_brewer(palette="Pastel1") 
+o
+# otra forma de representar esto
+
+ggplot (data1, aes(type, d13C, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa)
+plot(TukeyHSD (aov.fosa))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa), las=1)
+```
+
+# explorar diferencias con el isotopo de 15N
+
+
+# d15N variable dependiente
+# type (diferentes zonas en la columna de agua) variable independiente o variable categorica
+
+```{r cars}
+ggplot(data1, aes(type, d15N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$d15N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(d15N~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(d15N~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, d15N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="pelagic_wc_sed_nitrogen_isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_N <- aov(d15N~type, data=data1)
+summary(aov.fosa_N) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+p <- ggplot (data1, aes(type, d15N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression ("p<0.001")) + theme(legend.position = "none") +  
+    scale_fill_brewer(palette="Pastel1") 
+  #geom_point(position = position_dodge(width = .75))
+p
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type, d15N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_N)
+plot(TukeyHSD (aov.fosa_N))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_N), las=1)
+
+```
+
+
+
+# CN WATER COLUMN
+
+
+```{r cars}
+ggplot(data1, aes(type, C.N)) + geom_boxplot ()
+# existen diferencias significativas entre las zonas de la columna de agua con respecto a d13C, 15dN, POC, PON, y C/N ?.
+
+# supuesto de normalidad (si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por lo tanto los datos tienen distribucion normal)
+#La prueba de Shapiro-Wilk es la prueba para comprobar la normalidad de los datos. La hipótesis nula de la prueba de Shapiro-Wilk es que los datos son normales, y si el valor p de la prueba es inferior a 0,05, se rechaza la hipótesis nula con una significación del 5% y se concluye que los datos no son normales.
+
+shapiro.test(data1$C.N)
+
+
+# HOMOCEDASTICIDAD (homogenidad en varianzas)
+bartlett.test(C.N~type, data=data1)
+#si el p es > 0.05 no tenemos elementos suficientes para rechazar la hipotesis nula, por #lo tanto los datos tienen varianzas homogeneas
+
+# como no se está cumpliendo la homocedasticidad, porque el valor es <0.05, hacemos un test de anova de Welch, para datos que violan el supuesto de hoocedasticidad
+
+
+# perform Welch's ANOVA
+oneway.test(C.N~type, data=data1, var.equal = F)
+
+# P-VALUE (0.07245) > 0.05, por lo tanto aceptamos la HO
+
+# posterior a Welch para ver si hay diferencias pareadas suguiren haer un games_howell_test (para datos no parametricos https://statisticsbyjim.com/anova/welchs-anova-compared-to-classic-one-way-anova/)
+
+install.packages("rstatix")
+library(rstatix)
+
+# The Games-Howell test is a nonparametric approach to compare combinations of groups or treatments. Although rather similar to Tukey's test in its formulation, the Games-Howell test does not assume equal variances and sample sizes. The test was designed based on Welch's degrees of freedom correction and uses Tukey's studentized range distribution. Therefore, we use Games-Howell test if we used the Welch's ANOVA to analyze our data. 
+
+install.packages("ggstatsplot")
+library(ggstatsplot)
+
+gh <- games_howell_test(data1, C.N~type, conf.level = 0.95, detailed = FALSE)
+gh
+
+write.csv(gh, file="pelagic_vs_sed_CN__isotope_stats_wc.csv",sep = ",", quote = FALSE, row.names = F)
+
+
+# HASTA AQUI FUNCIONA BIEN, DEPENDE DEL RESULTADOS PARA EXPLORAR LAS LINEAS MAS ABAJO 
+
+
+aov.fosa_CN <- aov(C.N~type, data=data1)
+summary(aov.fosa_CN) # si Pr (>F) es <0.05 rechazamos la hipotesis nula de igual y suguiere que hay diferencias estadisticas.
+
+q <- ggplot (data1, aes(type, C.N, fill=type)) + geom_boxplot() + geom_jitter() + ggtitle(expression ("p<0.001")) + theme(legend.position = "none") +  
+    scale_fill_brewer(palette="Pastel1")
+q
+
+# otra forma de representar esto
+
+ggplot (data1, aes(type, C.N, fill=type)) + stat_summary(fun = mean, geom = "bar") +
+ stat_summary() + theme(legend.position = "none")
+
+# prueba posterio post hoc, es una comparacion multiple de los promedios
+
+TukeyHSD (aov.fosa_CN)
+plot(TukeyHSD (aov.fosa_CN))
+
+par(mar = c(4.6, 11,4.6,0.5))
+plot(TukeyHSD (aov.fosa_CN), las=1)
+
+```
+
+```{r cars}
+#library(ggarrange)
+iso_wc_trench<- ggarrange (o,p,q,
+                    labels = c("A","B","C"),
+                    ncol = 1, nrow = 3)
+iso_wc_trench
+```
+
+# otras exploraciones
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$d13C
+y <- data$C.N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 11)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,1,1)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) #+
+  #geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+#------------------------------------------------------------------------------------------
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr3b.csv", header = TRUE, sep = ",")
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$d13C
+y <- data$C.N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 19, 12, 19, 17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) #+
+  #geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+#------------------------------------------------------------------------------------------
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/linear_corr3.csv", header = TRUE, sep = ",")
+```
+
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$d13C
+y <- data$d15N
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 14, 13, 12, 11,12,10)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,1,1,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+```{r }
+bp <- ggplot(data, aes(x=d13C, y=type, group=id)) + 
+  geom_point(aes(fill=type)) +
+    scale_fill_brewer(palette = "RdBu")
+bp
+```
+
+
+
+```{r cars}
+mypal <- colorRampPalette(brewer.pal(12, "RdBu"))
+
+x <- data$C.N
+y <- data$d13C
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=type, color=type, size = type))+
+  #scale_shape_manual(values=c(15, 19, 17,15, 19, 17,15, 19, 17,18)) +
+  scale_colour_manual(values = mypal(12)) +
+ # scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4)) +
+  xlab("C/N") + 
+  ylab("d13C") 
+p
+```
+
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/isotope_sediments_Xu_2021.csv", fileEncoding = "Latin1", check.names = F, header = TRUE, sep = ",")
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`13C`
+y <- data$`15N`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,19,17, 8, 18, 15, 16,18)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4.5,5,4,4,4,4,4,4.5,5,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`13C`
+y <- data$`TOC`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,19,17, 8, 18, 15, 16,16)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4.5,5,4,4,4,4,4,4.5,5,5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "TOC (%)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`TOC`
+y <- data$`15N`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,19,17, 8, 18, 15, 16,17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4.5,5,4,4,4,4,4,4.5,5,5)) + 
+  labs(
+    x = "TOC (%)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(0,3), linetype="dotted")
+p
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`13C`
+y <- data$`C/N`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,19,17, 8, 18, 15, 16, 17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4.5,5,4,4,4,4,4,4.5,5, 5)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`TOC`
+y <- data$`TN`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,19,17, 8, 18, 15, 16, 17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4.5,5,4,4,4,4,4,4.5,5, 5)) + 
+  labs(
+    x = "TOC (%)" ,
+    y = "TN(%)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(3,4), linetype="dotted")
+p
+```
+
+```{r cars}
+data <- read.csv("~/Documents/POC/isotope_R/input/isotope_sediments_Xu_2021_3.csv", fileEncoding = "Latin1", check.names = F, header = TRUE, sep = ",")
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`13C`
+y <- data$`15N`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=trench, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,8,17, 8, 18, 15, 16,18, 15, 16, 18,19,17, 12, 18, 15, 16,17,19, 17, 8, 18, 15, 16, 18,8,17, 8, 18, 15, 16,18, 15, 16, 18,19,17, 12, 18, 15, 16,17, 16, 18,19,17, 12, 18, 15, 16,17,17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "*&delta;*<sup>15</sup>N (&permil; Air)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`TOC`
+y <- data$`TN`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,8,17, 8, 18, 15, 16,18, 15, 16, 18,19,17, 12, 18, 15, 16)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "TOC (%)" ,
+    y = "TN (%)"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(0,5), linetype="dotted")
+p
+```
+
+```{r cars}
+#mypal <- colorRampPalette(brewer.pal(10, "viridis"))
+
+x <- data$`13C`
+y <- data$`C/N`
+
+my.formula <- y ~ x
+
+p <- ggplot(data = data, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se=FALSE, formula = my.formula, colour="black", size=0.5) +
+  stat_poly_eq(formula = my.formula, 
+               aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")), 
+               parse = TRUE) +
+  geom_point(aes(shape=Site, color=Site, size = Site))+
+  scale_shape_manual(values=c(19, 17, 8, 18, 15, 16, 18,8,17, 8, 18, 15, 16,18, 15, 16, 18,19,17, 12, 18, 15, 16,17)) +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  scale_fill_viridis(discrete = TRUE) +
+ scale_size_manual(values=c(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4)) + 
+  labs(
+    x = "*&delta;*<sup>13</sup>C<sub>POC</sub> (&permil; VPDB)" ,
+    y = "C/N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  ) +
+  geom_vline(xintercept=c(-22.5,-23.75), linetype="dotted")
+p
+```
+

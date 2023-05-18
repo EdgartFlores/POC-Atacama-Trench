@@ -1,0 +1,32 @@
+---
+title: "POC_code_2 (map)"
+author: "Edgart Flores"
+date: "5/18/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r cars}
+library(marmap)
+papoue <- getNOAA.bathy(lon1 = -90, lon2 = -60,
+lat1 = -60, lat2 = 0, resolution = 1)
+```
+
+```{r pressure, echo=FALSE}
+# Creating color palettes
+blues <- c("lightsteelblue4", "lightsteelblue3",
+"lightsteelblue2", "lightsteelblue1")
+greys <- c(grey(0.6), grey(0.93), grey(0.99))
+```
+
+```{r pressure, echo=FALSE}
+plot(papoue, image = TRUE, land = TRUE, lwd = 0.03,
+bpal = list(c(0, max(papoue), greys),
+c(min(papoue), 0, blues)))
+# Add coastline
+plot(papoue, n = 1, lwd = 0.4, add = TRUE)
+```
+
